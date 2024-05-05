@@ -1,11 +1,14 @@
 #version 460
-in vec3 VertexPosition;
-in vec3 VertexColor;
+layout (location=0) in vec3 VertexPosition;
+layout (location=1) in vec3 VertexColor;
 
-out vec3 Color;
+layout (location=0) out vec3 vColor;
+
+uniform mat4 RotationMatrix;
 
 void main()
 {
-    Color = VertexColor;
-    gl_Position = vec4( VertexPosition, 1.0 );
+    vColor = VertexColor;
+
+    gl_Position = RotationMatrix * vec4(VertexPosition,1.0);
 }
