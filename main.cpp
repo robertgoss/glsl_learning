@@ -1,7 +1,90 @@
 #include <iostream>
+#include <fstream>
+#include <vector>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+
+// All based on OpenGL4 Shading Language cookbook, David Wolff.
+
+std::string loadShaderAsString(const std::string& path) {
+    std::string fullPath = "../shaders/" + path;
+    std::fstream file(fullPath, std::ios_base::in);
+    std::string str((std::istreambuf_iterator<char>(file)),
+                    std::istreambuf_iterator<char>());
+    return str;
+}
+
+GLuint loadShader(const std::string& path, uint64_t shaderType) {
+    // Create a vertex shader
+    GLuint shader = glCreateShader(shaderType);
+    if (shader == 0) {
+        std::cerr << "Unable to create shader - " << path << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    // Load the shader code
+    std::string shaderCode = loadShaderAsString(path);
+    const GLchar* codeArray[] = {shaderCode.c_str()};
+    glShaderSource(shader, 1, codeArray, nullptr);
+    glCompileShader(shader);
+    // Check the status
+    GLint result;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
+    if (result == GL_FALSE) {
+        std::cerr << "Shader compilation failed - " << path << std::endl;
+        // Get and print the log info
+        GLint logLen;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLen);
+        if (logLen > 0) {
+            std::string log(logLen, ' ');
+            GLsizei written;
+            glGetShaderInfoLog(shader, logLen, &written, log.data());
+            std::cerr << "Shader log: " << std::endl << log << std::endl;
+        }
+        exit(EXIT_FAILURE);
+    }
+    return shader;
+}
+
+GLuint makeProgram(const std::vector<GLuint>& shaders) {
+    GLuint programHandle = glCreateProgram();
+    if(!programHandle) {
+        std::cerr << "Unable to create program" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    // Attach shaders
+    for(GLuint shader : shaders) {
+        glAttachShader(programHandle, shader);
+    }
+    // Link to make a program
+    glLinkProgram(programHandle);
+    // Verify the link
+    GLint status;
+    glGetProgramiv(programHandle, GL_LINK_STATUS, &status);
+    if(status == GL_FALSE) {
+        std::cerr << "Failed to link shader program!" << std::endl;
+        // Get and print the log info
+        GLint logLen;
+        glGetProgramiv(programHandle, GL_INFO_LOG_LENGTH, &logLen);
+        if (logLen > 0) {
+            std::string log(logLen, ' ');
+            GLsizei written;
+            glGetProgramInfoLog(programHandle, logLen, &written, log.data());
+            std::cerr << "Shader log: " << std::endl << log << std::endl;
+        }
+        exit(EXIT_FAILURE);
+    }
+    // Load it into pipeline
+    glUseProgram(programHandle);
+    // Tidy up
+    for (GLuint shader : shaders) {
+        glDetachShader(programHandle, shader);
+        glDeleteShader(shader);
+    }
+
+    return programHandle;
+}
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
@@ -26,5 +109,11 @@ int main() {
         std::cerr << "Unable to load OpenGL functions!" << std::endl;
         exit(EXIT_FAILURE);
     }
+
+    GLuint vertShader = loadShader("basic.vert.glsl", GL_VERTEX_SHADER);
+    GLuint fragShader = loadShader("basic.frag.glsl", GL_FRAGMENT_SHADER);
+
+    GLuint program = makeProgram({vertShader, fragShader});
+
     return 0;
 }
