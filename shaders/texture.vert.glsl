@@ -1,12 +1,12 @@
 #version 460
 layout (location=0) in vec3 VertexPosition;
-layout (location=1) in vec3 VertexColor;
+layout (location=1) in vec2 VertexUV;
 
-layout (location=0) out vec3 vColor;
+layout (location=0) out vec2 vUV;
 
 void main()
 {
-    vColor = VertexColor;
+    vUV = VertexUV;
 
     gl_Position = vec4(VertexPosition,1.0);
 }

@@ -38,3 +38,48 @@ GLuint VertexBufferCreator::single_colourful_triangle() {
     // Return handle
     return vaoHandle;
 }
+
+GLuint VertexBufferCreator::textured_quad(){
+    GLuint vaoHandle;
+    float positionData[] = {
+            -1.0f, -1.0f, 0.0f,
+            1.0f, -1.0f, 0.0f,
+            -1.0f, 1.0f, 0.0f,
+            -1.0f, 1.0f, 0.0f,
+            1.0f, -1.0f, 0.0f,
+            1.0f, 1.0f, 0.0f};
+    float uvData[] = {
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f};
+    // Create and populate the buffer objects
+    GLuint vboHandle[2];
+    glGenBuffers(2, vboHandle);
+    GLuint positionBufferHandle = vboHandle[0];
+    GLuint uvBufferHandle = vboHandle[1];
+    // Populate the position and colour buffers
+    glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle);
+    glBufferData(GL_ARRAY_BUFFER, 18*sizeof(float),
+                 positionData, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, uvBufferHandle);
+    glBufferData(GL_ARRAY_BUFFER, 12*sizeof(float),
+                 uvData, GL_STATIC_DRAW);
+    // Setup the vertex array object
+    glGenVertexArrays(1, &vaoHandle);
+    glBindVertexArray(vaoHandle);
+    // Enable the vertex attribute arrays
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    // Map the indices to the buffers
+    glBindVertexBuffer(0, positionBufferHandle, 0, sizeof(GLfloat)*3);
+    glBindVertexBuffer(1, uvBufferHandle, 0, sizeof(GLfloat)*2);
+    glVertexAttribFormat(0, 6, GL_FLOAT, GL_FALSE, 0);
+    glVertexAttribBinding(0, 0);
+    glVertexAttribFormat(1, 6, GL_FLOAT, GL_FALSE, 0);
+    glVertexAttribBinding(1, 1);
+    // Return handle
+    return vaoHandle;
+}
