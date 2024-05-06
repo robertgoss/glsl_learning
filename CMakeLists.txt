@@ -14,7 +14,8 @@ add_executable(glsl_learning main.cpp
         vertex_buffer_creator.h
         vertex_buffer_creator.cpp
         scenes/spinning_triangle.cpp
-        scenes/fragment_circle.cpp)
+        scenes/fragment_circle.cpp
+)
 
 find_package(glm CONFIG REQUIRED)
 target_link_libraries(glsl_learning PRIVATE glm::glm)

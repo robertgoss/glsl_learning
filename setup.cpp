@@ -83,6 +83,81 @@ GLuint makeProgram(const std::vector<GLuint>& shaders) {
     return programHandle;
 }
 
+void debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei _length,
+  const GLchar* message, const void* _param)
+{
+    std::string sourceStr;
+    switch(source) {
+        case GL_DEBUG_SOURCE_API:
+            sourceStr="API";
+            break;
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+            sourceStr="Windows System";
+            break;
+        case GL_DEBUG_SOURCE_THIRD_PARTY:
+            sourceStr="Thirdparty";
+            break;
+        case GL_DEBUG_SOURCE_APPLICATION:
+            sourceStr="Application";
+            break;
+        case GL_DEBUG_SOURCE_OTHER:
+            sourceStr="Other";
+            break;
+        default:
+            sourceStr="UNKNOWN!";
+    }
+    std::string typeStr;
+    switch(type) {
+        case GL_DEBUG_TYPE_ERROR:
+            typeStr="Error";
+            break;
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+            typeStr="Deprecated";
+            break;
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+            typeStr="Undefined";
+            break;
+        case GL_DEBUG_TYPE_PORTABILITY:
+            typeStr="Portability";
+            break;
+        case GL_DEBUG_TYPE_PERFORMANCE:
+            typeStr="Performance";
+            break;
+        case GL_DEBUG_TYPE_MARKER:
+            typeStr="Marker";
+            break;
+        case GL_DEBUG_TYPE_PUSH_GROUP:
+            typeStr="Push Group";
+            break;
+        case GL_DEBUG_TYPE_POP_GROUP:
+            typeStr="Pop Group";
+            break;
+        case GL_DEBUG_TYPE_OTHER:
+            typeStr="Other";
+            break;
+        default:
+            typeStr="UNKNOWN!";
+    }
+    std::string severityStr;
+    switch(severity) {
+        case GL_DEBUG_SEVERITY_HIGH:
+            severityStr="High";
+            break;
+        case GL_DEBUG_SEVERITY_MEDIUM:
+            severityStr="Medium";
+            break;
+        case GL_DEBUG_SEVERITY_LOW:
+            severityStr="Low";
+            break;
+        case GL_DEBUG_SEVERITY_NOTIFICATION:
+            severityStr="Notification";
+            break;
+        default:
+            severityStr="UNKNOWN!";
+    }
+    printf("%s:%s[%s] (%d): %s\n", sourceStr.c_str(), typeStr.c_str(), severityStr.c_str(), id, message);
+}
+
 GLFWwindow* initWindow() {
     if(!glfwInit()) {
         std::cerr << "Unable to init glfw!" << std::endl;
@@ -93,6 +168,7 @@ GLFWwindow* initWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     GLFWwindow* window = glfwCreateWindow(800, 600, "GLSL Learning", nullptr, nullptr);
     if(!window) {
         std::cerr << "Unable to load open window!" << std::endl;
@@ -104,6 +180,9 @@ GLFWwindow* initWindow() {
         std::cerr << "Unable to load OpenGL functions!" << std::endl;
         exit(EXIT_FAILURE);
     }
+
+    glDebugMessageCallback(debugCallback, nullptr);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 
     return window;
 }

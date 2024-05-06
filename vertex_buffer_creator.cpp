@@ -76,9 +76,9 @@ GLuint VertexBufferCreator::textured_quad(){
     // Map the indices to the buffers
     glBindVertexBuffer(0, positionBufferHandle, 0, sizeof(GLfloat)*3);
     glBindVertexBuffer(1, uvBufferHandle, 0, sizeof(GLfloat)*2);
-    glVertexAttribFormat(0, 6, GL_FLOAT, GL_FALSE, 0);
+    glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
     glVertexAttribBinding(0, 0);
-    glVertexAttribFormat(1, 6, GL_FLOAT, GL_FALSE, 0);
+    glVertexAttribFormat(1, 2, GL_FLOAT, GL_FALSE, 0);
     glVertexAttribBinding(1, 1);
     // Return handle
     return vaoHandle;
