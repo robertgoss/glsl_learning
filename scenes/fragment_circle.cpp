@@ -8,6 +8,8 @@
 #include "../setup.h"
 #include "../vertex_buffer_creator.h"
 
+#include <cstring>
+
 // All based on OpenGL4 Shading Language cookbook, David Wolff.
 
 void fragment_circle_main() {
@@ -18,7 +20,8 @@ void fragment_circle_main() {
     GLuint programHandle = makeProgram({vertShader, fragShader});
 
     // Setup the triangle data
-    GLuint vaoHandle = VertexBufferCreator::textured_quad();
+    GLuint count = 0;
+    GLuint vaoHandle = VertexBufferCreator::textured_quad(count);
 
     GLuint blockIndex = glGetUniformBlockIndex(programHandle, "BlobSettings");
     GLint blockSize;
@@ -51,11 +54,11 @@ void fragment_circle_main() {
     glBufferData(GL_UNIFORM_BUFFER, blockSize, blockBuffer, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboHandle);
 
-    RenderCallback callback = [vaoHandle](float _time) {
+    RenderCallback callback = [vaoHandle, count](float _time) {
 
 
         glBindVertexArray(vaoHandle);
-        glDrawArrays(GL_TRIANGLES, 0, 6 );
+        glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
     };
 
     render(window, callback);

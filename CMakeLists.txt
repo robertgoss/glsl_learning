@@ -15,6 +15,7 @@ add_executable(glsl_learning main.cpp
         vertex_buffer_creator.cpp
         scenes/spinning_triangle.cpp
         scenes/fragment_circle.cpp
+        scenes/tumble_torus.cpp
 )
 
 find_package(glm CONFIG REQUIRED)

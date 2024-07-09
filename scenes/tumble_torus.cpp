@@ -1,6 +1,6 @@
-// Basic spinning colourful triangle
+// Basic torus model rendering to test lighting shaders
 
-// Chapter 2
+// Chapter 3
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -8,9 +8,11 @@
 #include "../setup.h"
 #include "../vertex_buffer_creator.h"
 
+#include <cstring>
+
 // All based on OpenGL4 Shading Language cookbook, David Wolff.
 
-void spinning_triangle_main() {
+void tumble_torus_main() {
     GLFWwindow* window = initWindow();
 
     GLuint vertShader = loadShader("rotate.vert.glsl", GL_VERTEX_SHADER);
@@ -19,7 +21,7 @@ void spinning_triangle_main() {
 
     // Setup the triangle data
     GLuint count = 0;
-    GLuint vaoHandle = VertexBufferCreator::single_colourful_triangle(count);
+    GLuint vaoHandle = VertexBufferCreator::torus(count);
 
     float angle = 0.0f;
     GLint location = glGetUniformLocation(programHandle, "RotationMatrix");
@@ -29,8 +31,12 @@ void spinning_triangle_main() {
         if (angle > 360) {
             angle -= 360;
         }
+        double angle2 = angle * 1.45;
+        if (angle2 > 360) {
+            angle2 -= 360;
+        }
 
-        glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f,0.0f,1.0f));
+        glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f,cos(angle2),sin(angle2)));
 
         glUniformMatrix4fv(location, 1, GL_FALSE, &rotationMatrix[0][0]);
 
