@@ -18,6 +18,6 @@ GLuint makeProgram(const std::vector<GLuint>& shaders);
 GLFWwindow* initWindow();
 
 using RenderCallback = const std::function<void(float)>&;
-void render(GLFWwindow*, RenderCallback drawing);
+void render(GLFWwindow*, bool use_depth, RenderCallback drawing);
 
 #endif //GLSL_LEARNING_SETUP_H

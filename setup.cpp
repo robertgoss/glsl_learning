@@ -187,9 +187,13 @@ GLFWwindow* initWindow() {
     return window;
 }
 
-void render(GLFWwindow* window, RenderCallback callback) {
+void render(GLFWwindow* window, bool use_depth, RenderCallback callback) {
     // Setup to do the renderings
     glfwSwapInterval(1);
+
+    if (use_depth) {
+        glEnable(GL_DEPTH_TEST);
+    }
 
     while (!glfwWindowShouldClose(window))
     {
@@ -199,7 +203,11 @@ void render(GLFWwindow* window, RenderCallback callback) {
         glfwGetFramebufferSize(window, &width, &height);
 
         glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT);
+        if (use_depth) {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        } else {
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
 
         callback(float(glfwGetTime()));
 

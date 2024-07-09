@@ -61,5 +61,5 @@ void fragment_circle_main() {
         glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
     };
 
-    render(window, callback);
+    render(window, false, callback);
 }

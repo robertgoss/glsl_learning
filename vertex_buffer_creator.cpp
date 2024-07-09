@@ -159,7 +159,7 @@ GLuint VertexBufferCreator::single_colourful_triangle(GLuint& count) {
             1.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f,
             0.0f, 0.0f, 1.0f };
-    return from_buffers(elems, positionData, &colorData, 0);
+    return from_buffers(elems, positionData, 0, &colorData, 0);
 }
 
 GLuint VertexBufferCreator::textured_quad(GLuint& count){
@@ -180,7 +180,7 @@ GLuint VertexBufferCreator::textured_quad(GLuint& count){
             0.0f, 1.0f,
             1.0f, 1.0f};
     // Create and populate the buffer objects
-    return from_buffers(elems, positionData, 0, &uvData);
+    return from_buffers(elems, positionData, 0, 0, &uvData);
 }
 
 GLuint VertexBufferCreator::from_buffers(
