@@ -4,6 +4,73 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
+GLuint VertexBufferCreator::cube(GLuint& count) {
+    GLfloat side2 = 0.2 / 2.0f;
+
+    std::vector<GLfloat> p = {
+            // Front
+            -side2, -side2, side2, side2, -side2, side2, side2,  side2, side2,  -side2,  side2, side2,
+            // Right
+            side2, -side2, side2, side2, -side2, -side2, side2,  side2, -side2, side2,  side2, side2,
+            // Back
+            -side2, -side2, -side2, -side2,  side2, -side2, side2,  side2, -side2, side2, -side2, -side2,
+            // Left
+            -side2, -side2, side2, -side2,  side2, side2, -side2,  side2, -side2, -side2, -side2, -side2,
+            // Bottom
+            -side2, -side2, side2, -side2, -side2, -side2, side2, -side2, -side2, side2, -side2, side2,
+            // Top
+            -side2,  side2, side2, side2,  side2, side2, side2,  side2, -side2, -side2,  side2, -side2
+    };
+
+    std::vector<GLfloat> n = {
+            // Front
+            0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+            // Right
+            1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            // Back
+            0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f,
+            // Left
+            -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+            // Bottom
+            0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f,
+            // Top
+            0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f
+    };
+
+    // Colours
+    std::vector<GLfloat> c;
+    for (auto f : n) {
+        c.push_back(fabs(f));
+    }
+
+    std::vector<GLfloat> tex = {
+            // Front
+            0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+            // Right
+            0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+            // Back
+            0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+            // Left
+            0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+            // Bottom
+            0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+            // Top
+            0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f
+    };
+
+    std::vector<GLuint> el = {
+            0,1,2,0,2,3,
+            4,5,6,4,6,7,
+            8,9,10,8,10,11,
+            12,13,14,12,14,15,
+            16,17,18,16,18,19,
+            20,21,22,20,22,23
+    };
+
+    count = el.size();
+    return from_buffers(el, p, &n, &c, &tex);
+}
+
 GLuint VertexBufferCreator::torus(GLuint& count) {
     GLuint nsides = 8;
     GLuint nrings = 12;
@@ -14,6 +81,8 @@ GLuint VertexBufferCreator::torus(GLuint& count) {
 
     // Points
     std::vector<GLfloat> p(3 * nVerts);
+    // Colours
+    std::vector<GLfloat> c(3 * nVerts);
     // Normals
     std::vector<GLfloat> n(3 * nVerts);
     // Tex coords
@@ -40,6 +109,9 @@ GLuint VertexBufferCreator::torus(GLuint& count) {
             n[idx] = cv * cu * r;
             n[idx + 1] = cv * su * r;
             n[idx + 2] = sv * r;
+            c[idx] = fabs(n[idx]);
+            c[idx+1] = fabs(n[idx+1]);
+            c[idx+2] = fabs(n[idx+2]);
             tex[tidx] = u / glm::two_pi<float>();
             tex[tidx + 1] = v / glm::two_pi<float>();
             tidx += 2;
@@ -64,14 +136,14 @@ GLuint VertexBufferCreator::torus(GLuint& count) {
             el[idx] = (ringStart + side);
             el[idx+1] = (nextRingStart + side);
             el[idx+2] = (nextRingStart + nextSide);
-            //el[idx+4] = ringStart + side;
-            //el[idx+3] = nextRingStart + nextSide;
-            //el[idx+5] = (ringStart + nextSide);
+            el[idx+4] = ringStart + side;
+            el[idx+3] = nextRingStart + nextSide;
+            el[idx+5] = (ringStart + nextSide);
             idx += 6;
         }
     }
     count = el.size();
-    return from_buffers(el, p, &n, &tex);
+    return from_buffers(el, p, &n, &c, &tex);
 }
 
 GLuint VertexBufferCreator::single_colourful_triangle(GLuint& count) {
@@ -114,6 +186,7 @@ GLuint VertexBufferCreator::textured_quad(GLuint& count){
 GLuint VertexBufferCreator::from_buffers(
         const std::vector<GLuint>& elem,
         const std::vector<GLfloat>& pos,
+        const std::vector<GLfloat>* norm,
         const std::vector<GLfloat>* colour,
         const std::vector<GLfloat>* uv)
 {
@@ -128,6 +201,14 @@ GLuint VertexBufferCreator::from_buffers(
     glGenBuffers(1, &positionHandle);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, positionHandle);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, pos.size() * sizeof(GLfloat)*3, pos.data(), GL_STATIC_DRAW);
+
+    // Setup norm buffer (if exists)
+    GLuint normHandle=0;
+    if (norm) {
+        glGenBuffers(1, &normHandle);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, normHandle);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, norm->size() * sizeof(GLfloat)*3, norm->data(), GL_STATIC_DRAW);
+    }
 
     // Setup colour buffer (if exists)
     GLuint colourHandle=0;
@@ -157,16 +238,22 @@ GLuint VertexBufferCreator::from_buffers(
     glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, 0 );
     glEnableVertexAttribArray(0);  // Vertex position
 
-    if (colour) {
-        glBindBuffer(GL_ARRAY_BUFFER, colourHandle);
+    if (norm) {
+        glBindBuffer(GL_ARRAY_BUFFER, normHandle);
         glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, 0 );
         glEnableVertexAttribArray(1);  // Vertex position
     }
 
+    if (colour) {
+        glBindBuffer(GL_ARRAY_BUFFER, colourHandle);
+        glVertexAttribPointer( 2, 3, GL_FLOAT, GL_FALSE, 0, 0 );
+        glEnableVertexAttribArray(2);  // Vertex position
+    }
+
     if (uv) {
         glBindBuffer(GL_ARRAY_BUFFER, uvHandle);
-        glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, 0, 0 );
-        glEnableVertexAttribArray(2);  // Vertex position
+        glVertexAttribPointer( 3, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+        glEnableVertexAttribArray(3);  // Vertex position
     }
 
     return vaoHandle;

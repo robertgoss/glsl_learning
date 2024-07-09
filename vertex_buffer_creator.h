@@ -7,14 +7,16 @@
 
 class VertexBufferCreator {
 public:
-    static GLuint single_colourful_triangle(GLuint& vert_count);
-    static GLuint textured_quad(GLuint& vert_count);
-    static GLuint torus(GLuint& vert_count);
+    static GLuint single_colourful_triangle(GLuint& count);
+    static GLuint textured_quad(GLuint& count);
+    static GLuint torus(GLuint& count);
+    static GLuint cube(GLuint& count);
 
 private:
     static GLuint from_buffers(
             const std::vector<GLuint>& elem,
             const std::vector<GLfloat>& pos,
+            const std::vector<GLfloat>* normal,
             const std::vector<GLfloat>* colour,
             const std::vector<GLfloat>* uv
             );
