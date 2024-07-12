@@ -4,8 +4,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
-GLuint VertexBufferCreator::cube(GLuint& count) {
-    GLfloat side2 = 0.2 / 2.0f;
+GLuint VertexBufferCreator::cube(GLuint& count, float size) {
+    GLfloat side2 = size / 2.0f;
 
     std::vector<GLfloat> p = {
             // Front
@@ -259,7 +259,7 @@ GLuint VertexBufferCreator::from_buffers(
 
 GLuint VertexBufferCreator::named(const std::string& name, GLuint& count) {
     if (name == "cube") {
-        return cube(count);
+        return cube(count, 1.0);
     } else if (name == "torus") {
         return torus(count, 16,32);
     } else if (name == "torus-basic") {

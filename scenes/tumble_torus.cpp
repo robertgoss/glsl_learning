@@ -15,7 +15,13 @@
 void tumble_torus_main(const std::vector<std::string> &args) {
     GLFWwindow* window = initWindow();
 
-    GLuint vertShader = loadShader("diffuse.vert.glsl", GL_VERTEX_SHADER);
+    std::string shader = "diffuse";
+    if (args.size() > 1) {
+        shader = args[1];
+    }
+    shader += ".vert.glsl";
+
+    GLuint vertShader = loadShader(shader, GL_VERTEX_SHADER);
     GLuint fragShader = loadShader("basic.frag.glsl", GL_FRAGMENT_SHADER);
     GLuint programHandle = makeProgram({vertShader, fragShader});
 
