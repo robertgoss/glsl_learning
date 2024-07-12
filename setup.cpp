@@ -5,6 +5,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 std::string loadShaderAsString(const std::string& path) {
     std::string fullPath = "../shaders/" + path;
     std::fstream file(fullPath, std::ios_base::in);
@@ -208,8 +210,8 @@ void render(GLFWwindow* window, bool use_depth, RenderCallback callback) {
         } else {
             glClear(GL_COLOR_BUFFER_BIT);
         }
-
-        callback(float(glfwGetTime()));
+        glm::mat4 projection = glm::perspective(glm::radians(70.0f), (float)width/(float)height, 0.3f, 100.0f);
+        callback(float(glfwGetTime()), projection);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -220,4 +222,22 @@ void render(GLFWwindow* window, bool use_depth, RenderCallback callback) {
 
     glfwTerminate();
     exit(EXIT_SUCCESS);
+}
+
+GLuint setUniform(GLuint handle, const std::string& name, const glm::vec3& v) {
+    GLint location = glGetUniformLocation(handle, name.c_str());
+    glUniform3f(location, v[0], v[1], v[2]);
+    return location;
+}
+
+GLuint setUniform(GLuint handle, const std::string& name, const glm::mat3& m) {
+    GLint location = glGetUniformLocation(handle, name.c_str());
+    glUniformMatrix3fv(location, 1, GL_FALSE, &m[0][0]);
+    return location;
+}
+
+GLuint setUniform(GLuint handle, const std::string& name, const glm::mat4& m) {
+    GLint location = glGetUniformLocation(handle, name.c_str());
+    glUniformMatrix4fv(location, 1, GL_FALSE, &m[0][0]);
+    return location;
 }

@@ -24,7 +24,7 @@ void spinning_triangle_main() {
     float angle = 0.0f;
     GLint location = glGetUniformLocation(programHandle, "RotationMatrix");
 
-    RenderCallback callback = [&angle, vaoHandle, location, count](float _time) {
+    RenderCallback callback = [&angle, vaoHandle, location, count](float _time, const glm::mat4& _) {
         angle += 0.01;
         if (angle > 360) {
             angle -= 360;

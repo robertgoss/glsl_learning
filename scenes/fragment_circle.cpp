@@ -54,7 +54,7 @@ void fragment_circle_main() {
     glBufferData(GL_UNIFORM_BUFFER, blockSize, blockBuffer, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboHandle);
 
-    RenderCallback callback = [vaoHandle, count](float _time) {
+    RenderCallback callback = [vaoHandle, count](float _time, const glm::mat4& _) {
 
 
         glBindVertexArray(vaoHandle);
