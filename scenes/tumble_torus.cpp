@@ -12,7 +12,7 @@
 
 // All based on OpenGL4 Shading Language cookbook, David Wolff.
 
-void tumble_torus_main() {
+void tumble_torus_main(const std::vector<std::string> &args) {
     GLFWwindow* window = initWindow();
 
     GLuint vertShader = loadShader("diffuse.vert.glsl", GL_VERTEX_SHADER);
@@ -32,7 +32,11 @@ void tumble_torus_main() {
 
     // Setup the triangle data
     GLuint count = 0;
-    GLuint vaoHandle = VertexBufferCreator::torus(count);
+    std::string geometry = "torus";
+    if (!args.empty()) {
+        geometry = args[0];
+    }
+    GLuint vaoHandle = VertexBufferCreator::named(geometry, count);
 
     float angle = 0.0f;
 

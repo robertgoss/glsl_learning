@@ -230,6 +230,12 @@ GLuint setUniform(GLuint handle, const std::string& name, const glm::vec3& v) {
     return location;
 }
 
+GLuint setUniform(GLuint handle, const std::string& name, const glm::vec4& v) {
+    GLint location = glGetUniformLocation(handle, name.c_str());
+    glUniform4f(location, v[0], v[1], v[2], v[3]);
+    return location;
+}
+
 GLuint setUniform(GLuint handle, const std::string& name, const glm::mat3& m) {
     GLint location = glGetUniformLocation(handle, name.c_str());
     glUniformMatrix3fv(location, 1, GL_FALSE, &m[0][0]);

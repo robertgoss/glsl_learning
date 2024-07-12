@@ -17,6 +17,7 @@ struct GLFWwindow;
 GLuint loadShader(const std::string& path, uint64_t shaderType);
 GLuint makeProgram(const std::vector<GLuint>& shaders);
 GLuint setUniform(GLuint handle, const std::string&, const glm::vec3& v);
+GLuint setUniform(GLuint handle, const std::string&, const glm::vec4& v);
 GLuint setUniform(GLuint handle, const std::string&, const glm::mat3& m);
 GLuint setUniform(GLuint handle, const std::string&, const glm::mat4& m);
 GLFWwindow* initWindow();

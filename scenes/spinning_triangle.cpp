@@ -10,7 +10,7 @@
 
 // All based on OpenGL4 Shading Language cookbook, David Wolff.
 
-void spinning_triangle_main() {
+void spinning_triangle_main(const std::vector<std::string> &_args) {
     GLFWwindow* window = initWindow();
 
     GLuint vertShader = loadShader("rotate.vert.glsl", GL_VERTEX_SHADER);

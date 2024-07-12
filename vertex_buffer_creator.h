@@ -4,13 +4,15 @@
 #include <glad/glad.h>
 
 #include <vector>
+#include <string>
 
 class VertexBufferCreator {
 public:
     static GLuint single_colourful_triangle(GLuint& count);
     static GLuint textured_quad(GLuint& count);
-    static GLuint torus(GLuint& count);
+    static GLuint torus(GLuint& count,  GLuint nsides, GLuint nrings);
     static GLuint cube(GLuint& count);
+    static GLuint named(const std::string& name, GLuint& count);
 
 private:
     static GLuint from_buffers(

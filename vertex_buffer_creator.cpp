@@ -71,9 +71,7 @@ GLuint VertexBufferCreator::cube(GLuint& count) {
     return from_buffers(el, p, &n, &c, &tex);
 }
 
-GLuint VertexBufferCreator::torus(GLuint& count) {
-    GLuint nsides = 8;
-    GLuint nrings = 12;
+GLuint VertexBufferCreator::torus(GLuint& count, GLuint nsides, GLuint nrings) {
     float outerRadius = 0.5;
     float innerRadius = 0.2;
     GLuint faces = nsides * nrings;
@@ -257,4 +255,15 @@ GLuint VertexBufferCreator::from_buffers(
     }
 
     return vaoHandle;
+}
+
+GLuint VertexBufferCreator::named(const std::string& name, GLuint& count) {
+    if (name == "cube") {
+        return cube(count);
+    } else if (name == "torus") {
+        return torus(count, 16,32);
+    } else if (name == "torus-basic") {
+        return torus(count, 8,12);
+    }
+    return 0;
 }

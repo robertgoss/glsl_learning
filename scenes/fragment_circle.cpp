@@ -12,7 +12,7 @@
 
 // All based on OpenGL4 Shading Language cookbook, David Wolff.
 
-void fragment_circle_main() {
+void fragment_circle_main(const std::vector<std::string>& _args) {
     GLFWwindow* window = initWindow();
 
     GLuint vertShader = loadShader("texture.vert.glsl", GL_VERTEX_SHADER);
