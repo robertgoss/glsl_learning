@@ -35,7 +35,6 @@ void tumble_torus_main() {
     GLuint vaoHandle = VertexBufferCreator::torus(count);
 
     float angle = 0.0f;
-    GLint location = glGetUniformLocation(programHandle, "RotationMatrix");
 
     RenderCallback callback = [&](float _time, const glm::mat4 proj) {
         angle += 0.01;
@@ -47,8 +46,7 @@ void tumble_torus_main() {
             angle2 -= 360;
         }
 
-        glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f,cos(angle2),sin(angle2)));
-        glUniformMatrix4fv(location, 1, GL_FALSE, &rotationMatrix[0][0]);
+        model = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f,cos(angle2),sin(angle2)));
 
         glm::mat4 mv = view * model;
         setUniform(programHandle, "ModelViewMatrix", mv);
