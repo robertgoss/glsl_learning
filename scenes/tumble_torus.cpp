@@ -15,7 +15,7 @@
 void tumble_torus_main(const std::vector<std::string> &args) {
     GLFWwindow* window = initWindow();
 
-    std::string shader = "two_side_phong";
+    std::string shader = "two_side_phong_discard";
     if (args.size() > 1) {
         shader = args[1];
     }
@@ -24,6 +24,8 @@ void tumble_torus_main(const std::vector<std::string> &args) {
     std::string frag_path = "basic.frag.glsl";
     if (shader == "two_side_phong") {
         frag_path = "two_sided_basic.frag.glsl";
+    } else if (shader == "two_side_phong_discard") {
+        frag_path = "two_sided_discard.frag.glsl";
     }
 
     GLuint vertShader = loadShader(shader_path, GL_VERTEX_SHADER);
@@ -44,7 +46,7 @@ void tumble_torus_main(const std::vector<std::string> &args) {
         setUniform(programHandle, "Kd", Kd);
         setUniform(programHandle, "Ld", Ld);
         setUniform(programHandle, "LightPosition", view * worldLight);
-    } else if (shader == "phong" || shader == "two_side_phong") {
+    } else if (shader == "phong" || shader == "two_side_phong" || shader == "two_side_phong_discard") {
         glm::vec3 Ka = glm::vec3(0.9f, 0.5f, 0.3f);
         glm::vec3 La = glm::vec3(0.4f, 0.4f, 0.4f);
         glm::vec3 Ks = glm::vec3(0.8f, 0.8f, 0.8f);
@@ -60,7 +62,7 @@ void tumble_torus_main(const std::vector<std::string> &args) {
     }
     // Setup the triangle data
     GLuint count = 0;
-    std::string geometry = "open-cylinder";
+    std::string geometry = "torus";
     if (!args.empty()) {
         geometry = args[0];
     }

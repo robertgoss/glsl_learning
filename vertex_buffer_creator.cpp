@@ -197,8 +197,8 @@ GLuint VertexBufferCreator::torus(GLuint& count, GLuint nsides, GLuint nrings) {
             el[idx] = (ringStart + side);
             el[idx+1] = (nextRingStart + side);
             el[idx+2] = (nextRingStart + nextSide);
-            el[idx+4] = ringStart + side;
-            el[idx+3] = nextRingStart + nextSide;
+            el[idx+3] = ringStart + side;
+            el[idx+4] = nextRingStart + nextSide;
             el[idx+5] = (ringStart + nextSide);
             idx += 6;
         }
