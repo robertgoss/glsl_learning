@@ -12,6 +12,7 @@ public:
     static GLuint textured_quad(GLuint& count);
     static GLuint torus(GLuint& count,  GLuint nsides, GLuint nrings);
     static GLuint cube(GLuint& count, float size);
+    static GLuint open_cylinder(GLuint& count, GLuint nsides);
     static GLuint named(const std::string& name, GLuint& count);
 
 private:

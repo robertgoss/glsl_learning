@@ -224,6 +224,12 @@ void render(GLFWwindow* window, bool use_depth, RenderCallback callback) {
     exit(EXIT_SUCCESS);
 }
 
+GLuint setUniform(GLuint handle, const std::string& name, float f) {
+    GLint location = glGetUniformLocation(handle, name.c_str());
+    glUniform1f(location, f);
+    return location;
+}
+
 GLuint setUniform(GLuint handle, const std::string& name, const glm::vec3& v) {
     GLint location = glGetUniformLocation(handle, name.c_str());
     glUniform3f(location, v[0], v[1], v[2]);

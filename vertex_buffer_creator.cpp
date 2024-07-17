@@ -71,6 +71,69 @@ GLuint VertexBufferCreator::cube(GLuint& count, float size) {
     return from_buffers(el, p, &n, &c, &tex);
 }
 
+GLuint VertexBufferCreator::open_cylinder(GLuint &count, GLuint nsides) {
+    float radius = 0.5;
+    float height = 1.0;
+    int nVerts  = nsides * 2;
+    // Points
+    std::vector<GLfloat> p(3 * nVerts);
+    // Colours
+    std::vector<GLfloat> c(3 * nVerts);
+    // Normals
+    std::vector<GLfloat> n(3 * nVerts);
+    // Tex coords
+    std::vector<GLfloat> tex(2 * nVerts);
+    // Elements
+    std::vector<GLuint> el(6 * nsides);
+
+    float sideFactor = glm::two_pi<float>() / nsides;
+    int idx = 0, tidx = 0;
+    for( GLuint side = 0; side < nsides; side++ ) {
+        float v = side * sideFactor;
+        float cv = cos(v);
+        float sv = sin(v);
+        for(int i = 0; i < 2; ++i) {
+            p[idx] = radius * cv;
+            p[idx + 1] = radius * sv;
+            if (i == 0) {
+                p[idx + 2] = height / 2;
+            } else {
+                p[idx + 2] = -height / 2;
+            }
+            n[idx] = cv;
+            n[idx + 1] = sv;
+            n[idx + 2] = 0;
+            c[idx] = fabs(n[idx]);
+            c[idx + 1] = fabs(n[idx + 1]);
+            c[idx + 2] = fabs(n[idx + 2]);
+            tex[tidx] = v / glm::two_pi<float>();
+            if (i == 0) {
+                tex[tidx + 1] = 0.0;
+            } else {
+                tex[tidx + 1] = 1.0;
+            }
+            tidx += 2;
+            idx += 3;
+        }
+    }
+
+    idx = 0;
+    for( GLuint side = 0; side < nsides; side++ ) {
+        int sideBase = side * 2;
+        int nextSideBase = ((side+1) % nsides) * 2;
+        // The quad
+        el[idx] = sideBase;
+        el[idx+1] = sideBase + 1;
+        el[idx+2] = nextSideBase;
+        el[idx+4] = sideBase + 1;;
+        el[idx+3] = nextSideBase;
+        el[idx+5] = nextSideBase + 1;
+        idx += 6;
+    }
+    count = el.size();
+    return from_buffers(el, p, &n, &c, &tex);
+}
+
 GLuint VertexBufferCreator::torus(GLuint& count, GLuint nsides, GLuint nrings) {
     float outerRadius = 0.5;
     float innerRadius = 0.2;
@@ -264,6 +327,8 @@ GLuint VertexBufferCreator::named(const std::string& name, GLuint& count) {
         return torus(count, 16,32);
     } else if (name == "torus-basic") {
         return torus(count, 8,12);
+    } else if (name == "open-cylinder") {
+        return open_cylinder(count, 20);
     }
     return 0;
 }

@@ -15,14 +15,19 @@
 void tumble_torus_main(const std::vector<std::string> &args) {
     GLFWwindow* window = initWindow();
 
-    std::string shader = "diffuse";
+    std::string shader = "two_side_phong";
     if (args.size() > 1) {
         shader = args[1];
     }
-    shader += ".vert.glsl";
+    std::string shader_path = shader + ".vert.glsl";
 
-    GLuint vertShader = loadShader(shader, GL_VERTEX_SHADER);
-    GLuint fragShader = loadShader("basic.frag.glsl", GL_FRAGMENT_SHADER);
+    std::string frag_path = "basic.frag.glsl";
+    if (shader == "two_side_phong") {
+        frag_path = "two_sided_basic.frag.glsl";
+    }
+
+    GLuint vertShader = loadShader(shader_path, GL_VERTEX_SHADER);
+    GLuint fragShader = loadShader(frag_path, GL_FRAGMENT_SHADER);
     GLuint programHandle = makeProgram({vertShader, fragShader});
 
     // Query for each offset
@@ -31,14 +36,31 @@ void tumble_torus_main(const std::vector<std::string> &args) {
     model = glm::rotate(model, glm::radians(35.0f), glm::vec3(0.0f,1.0f,0.0f));
     glm::mat4 view = glm::lookAt(glm::vec3(0.0f,0.0f,2.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f));
 
+    glm::vec4 worldLight = glm::vec4(5.0f,5.0f,2.0f,1.0f);
+    glm::vec3 Kd = glm::vec3(0.9f, 0.5f, 0.3f);
+    glm::vec3 Ld = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    setUniform(programHandle, "Kd", glm::vec3(0.9f, 0.5f, 0.3f));
-    setUniform(programHandle, "Ld", glm::vec3(1.0f, 1.0f, 1.0f));
-    setUniform(programHandle, "LightPosition", view * glm::vec4(5.0f,5.0f,2.0f,1.0f) );
-
+    if (shader == "diffuse") {
+        setUniform(programHandle, "Kd", Kd);
+        setUniform(programHandle, "Ld", Ld);
+        setUniform(programHandle, "LightPosition", view * worldLight);
+    } else if (shader == "phong" || shader == "two_side_phong") {
+        glm::vec3 Ka = glm::vec3(0.9f, 0.5f, 0.3f);
+        glm::vec3 La = glm::vec3(0.4f, 0.4f, 0.4f);
+        glm::vec3 Ks = glm::vec3(0.8f, 0.8f, 0.8f);
+        glm::vec3 Ls = glm::vec3(1.0f, 1.0f, 1.0f);
+        setUniform(programHandle, "Material.Kd", Kd);
+        setUniform(programHandle, "Light.Ld", Ld);
+        setUniform(programHandle, "Light.Position", view * worldLight );
+        setUniform(programHandle, "Material.Ka", Ka);
+        setUniform(programHandle, "Light.La", La);
+        setUniform(programHandle, "Material.Ks", Ks);
+        setUniform(programHandle, "Light.Ls", Ls);
+        setUniform(programHandle, "Material.Shininess", 100.0f);
+    }
     // Setup the triangle data
     GLuint count = 0;
-    std::string geometry = "torus";
+    std::string geometry = "open-cylinder";
     if (!args.empty()) {
         geometry = args[0];
     }
